@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>S Nikesh — 3D Portfolio (HTML)</title>
+  <meta name="description" content="S Nikesh — 3D professional portfolio built in plain HTML + Three.js" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b1220; --panel:#0f1724; --muted:#9aa7b8; --text:#e6eef8; --accent:#06b6d4; --glass: rgba(255,255,255,0.04);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:var(--text);background:linear-gradient(180deg,#051023 0%, #071126 100%);}
+    a{color:inherit}
+    .container{max-width:1100px;margin:0 auto;padding:28px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#8b5cf6);display:grid;place-items:center;font-weight:800}
+    nav{display:flex;gap:14px}
+    nav a{color:var(--muted);font-weight:600;padding:8px 12px;border-radius:10px}
+    nav a:hover{color:var(--text);background:rgba(255,255,255,0.02)}
+    .hero{display:grid;grid-template-columns:1fr 520px;gap:28px;align-items:center;margin-top:28px}
+    .hero .copy h1{font-size:38px;margin:0 0 10px;line-height:1.02}
+    .hero .copy p{margin:0;color:var(--muted);max-width:56ch}
+    .cta{display:inline-flex;gap:10px;align-items:center;padding:10px 16px;border-radius:12px;background:linear-gradient(90deg,var(--accent),#7c3aed);color:#021025;font-weight:700;border:0;cursor:pointer}
+    .subtle{background:var(--glass);padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);color:var(--muted)}
+    /* Layout sections */
+    .split{display:grid;grid-template-columns:320px 1fr;gap:18px;margin-top:26px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.04);padding:16px;border-radius:var(--radius)}
+    .projects{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .project{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border:1px solid rgba(255,255,255,0.03)}
+    .project h3{margin:0 0 6px;font-size:16px}
+    .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+    .tag{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.02);color:var(--muted)}
+    /* contact */
+    form{display:grid;gap:10px}
+    input,textarea{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:10px;border-radius:8px;color:var(--text);outline:none}
+    button.primary{background:linear-gradient(90deg,var(--accent),#7c3aed);border:0;padding:10px 14px;border-radius:10px;color:#021025;font-weight:700;cursor:pointer}
+    footer{margin-top:40px;color:var(--muted);font-size:14px;text-align:center;padding:36px 0}
+    /* 3D canvas area */
+    .canvas-wrap{width:100%;height:420px;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));display:flex;align-items:center;justify-content:center}
+    /* responsive */
+    @media (max-width: 980px){ .hero{grid-template-columns:1fr} .split{grid-template-columns:1fr} .projects{grid-template-columns:1fr} .canvas-wrap{height:360px} nav{display:none} .logo{width:44px;height:44px} }
+    @media (max-width:520px){ .canvas-wrap{height:300px} .hero .copy h1{font-size:28px} .container{padding:18px} }
+    /* subtle hover effects */
+    .project:hover{transform:translateY(-6px);transition:transform .25s}
+    .cta:active{transform:translateY(1px)}
+    /* fallback message style for no-webgl */
+    .no-webgl{color:var(--muted);padding:16px;text-align:center}
+  </style>
+</head>
+<body>
+  <div class="container" id="page">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">SN</div>
+        <div>
+          <div style="font-weight:800">S Nikesh</div>
+          <div style="font-size:13px;color:var(--muted)">3D Portfolio • Frontend • IoT</div>
+        </div>
+      </div>
+
+      <nav aria-label="Primary">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="copy">
+        <h1 id="hero-title">I build immersive web experiences and practical IoT projects.</h1>
+        <p>I'm a Computer Science & IoT student who loves combining hardware and polished front-end visuals. I focus on 3D interactions, quick prototypes, and production-ready UI.</p>
+        <div style="margin-top:18px;display:flex;gap:12px;align-items:center">
+          <button class="cta" onclick="document.location='#work'">View work</button>
+          <a class="subtle" href="#" download="S_Nikesh_Resume.pdf" id="resumeBtn">📄 Download resume</a>
+        </div>
+
+        <div style="margin-top:18px;display:flex;gap:10px">
+          <div class="subtle"><strong>Projects</strong><div style="color:var(--muted)">12+</div></div>
+          <div class="subtle"><strong>Experience</strong><div style="color:var(--muted)">2 years</div></div>
+        </div>
+      </div>
+
+      <!-- 3D Canvas -->
+      <div aria-hidden="false" class="canvas-wrap card" id="canvasWrap">
+        <canvas id="scene"></canvas>
+        <!-- fallback message -->
+        <div id="no-webgl" class="no-webgl" style="display:none">Your browser doesn't support WebGL — the 3D preview won't work. Scroll down to see the site.</div>
+      </div>
+    </section>
+
+    <section class="split" id="work" aria-label="Selected work">
+      <aside class="card" style="height:100%">
+        <h2 style="margin-top:0">Featured</h2>
+        <p style="color:var(--muted)">Highlighted project with interactive preview above. Click project tiles to view details or run live demos.</p>
+
+        <div style="margin-top:12px" class="subtle">
+          <div style="display:flex;justify-content:space-between"><span>InvoiceApp (Android)</span><strong>Java</strong></div>
+          <div style="font-size:13px;color:var(--muted)">Generates invoices and PDFs with templates — integrated with payment flow.</div>
+        </div>
+
+        <div style="margin-top:12px" class="subtle">
+          <div style="display:flex;justify-content:space-between"><span>Surveillance Robot</span><strong>Arduino</strong></div>
+          <div style="font-size:13px;color:var(--muted)">Human detection, camera streaming, NFC auth & remote alerts.</div>
+        </div>
+
+        <div style="margin-top:14px">
+          <a class="cta" href="#contact" style="display:inline-block">Hire me</a>
+        </div>
+      </aside>
+
+      <div>
+        <h2 style="margin:0 0 12px">Selected Projects</h2>
+        <div class="projects" role="list">
+          <article class="project" role="listitem" tabindex="0">
+            <h3>Invoice Generation App</h3>
+            <p style="margin:0;color:var(--muted)">Android app to create invoice PDFs with templates and share/export features.</p>
+            <div class="tags"><span class="tag">Android</span><span class="tag">Java</span><span class="tag">PDF</span></div>
+          </article>
+
+          <article class="project" role="listitem" tabindex="0">
+            <h3>Surveillance Robot</h3>
+            <p style="margin:0;color:var(--muted)">4-motor robot with camera streaming, human detection and secure NFC unlock.</p>
+            <div class="tags"><span class="tag">Arduino</span><span class="tag">IoT</span><span class="tag">CV</span></div>
+          </article>
+
+          <article class="project" role="listitem" tabindex="0">
+            <h3>E-commerce Template</h3>
+            <p style="margin:0;color:var(--muted)">Single-file fast storefront with cart, filters, and accessible UI.</p>
+            <div class="tags"><span class="tag">HTML</span><span class="tag">JS</span><span class="tag">Design</span></div>
+          </article>
+
+          <article class="project" role="listitem" tabindex="0">
+            <h3>Arduino Army Demo</h3>
+            <p style="margin:0;color:var(--muted)">Demo robot with human detection, alerts, and remote control interface.</p>
+            <div class="tags"><span class="tag">Robotics</span><span class="tag">Embedded</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" style="margin-top:30px">
+      <h2>About</h2>
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:18px;margin-top:12px">
+        <div class="card">
+          <p style="margin-top:0;color:var(--muted)">I'm a second-year Computer Science (IoT) student at SRM University. My work combines front-end development, 3D visuals and embedded systems — I build things that are both useful and beautiful.</p>
+          <ul style="color:var(--muted)">
+            <li>Languages: Java, Python, JavaScript</li>
+            <li>Tools: Arduino, Three.js, React</li>
+            <li>Interests: 3D web, product design, DSA</li>
+          </ul>
+        </div>
+
+        <aside class="card">
+          <h3 style="margin-top:0">Quick facts</h3>
+          <div style="color:var(--muted)">Location: Tamil Nadu, India</div>
+          <div style="color:var(--muted);margin-top:8px">Open to internships & freelance</div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="contact" style="margin-top:30px">
+      <h2>Contact</h2>
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:18px;margin-top:12px">
+        <div class="card">
+          <form id="contactForm" aria-label="Contact form">
+            <input id="name" placeholder="Your name" required />
+            <input id="email" type="email" placeholder="Email" required />
+            <textarea id="message" rows="5" placeholder="Tell me about your project" required></textarea>
+            <div style="display:flex;gap:10px">
+              <button class="primary" type="submit">Send message</button>
+              <button type="reset" class="subtle">Reset</button>
+            </div>
+            <div id="formMsg" style="color:var(--muted);margin-top:8px;font-size:14px"></div>
+          </form>
+        </div>
+
+        <aside class="card">
+          <h3 style="margin-top:0">Get in touch</h3>
+          <div style="color:var(--muted)">Email: <a href="mailto:ytnikesh123@gmail.com" style="color:var(--accent)">ytnikesh123@gmail.com</a></div>
+          <div style="color:var(--muted);margin-top:8px">Social: <a href="https://www.linkedin.com/in/s-nikesh/" target="_blank" rel="noopener" style="color:var(--accent)">LinkedIn</a> · <a href="https://github.com/nikesh2007" target="_blank" rel="noopener" style="color:var(--accent)">GitHub</a></div>
+        </aside>
+      </div>
+    </section>
+
+    <footer>
+      <div style="color:var(--muted)">© <span id="year"></span> S Nikesh — Built with plain HTML, CSS, and Three.js</div>
+    </footer>
+  </div>
+
+  <!-- Three.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
+
+  <script>
+    // Basic checks and setup
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function webglAvailable() {
+      try {
+        const canvas = document.createElement('canvas');
+        return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+      } catch (e) { return false; }
+    }
+
+    const noWebGL = !webglAvailable();
+    if (noWebGL) {
+      document.getElementById('no-webgl').style.display = 'block';
+      document.getElementById('canvasWrap').querySelector('canvas').style.display = 'none';
+    } else {
+      init3D();
+    }
+
+    // 3D scene: floating card, soft lights, small particles
+    function init3D(){
+      const canvas = document.getElementById('scene');
+      const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+      const DPR = Math.min(window.devicePixelRatio || 1, 2);
+      renderer.setPixelRatio(DPR);
+      renderer.setSize(canvas.clientWidth || canvas.parentElement.clientWidth, canvas.clientHeight || canvas.parentElement.clientHeight, false);
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      renderer.shadowMap.enabled = true;
+
+      const scene = new THREE.Scene();
+
+      const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+      camera.position.set(0, 0.7, 4);
+
+      // Lights
+      const ambient = new THREE.HemisphereLight(0xffffff, 0x222233, 0.6);
+      scene.add(ambient);
+      const key = new THREE.DirectionalLight(0xffffff, 0.9);
+      key.position.set(5, 6, 2);
+      scene.add(key);
+      const rim = new THREE.PointLight(0x06b6d4, 0.7, 8);
+      rim.position.set(-3, 1.5, 3);
+      scene.add(rim);
+
+      // Card geometry (rounded-look via softened box)
+      const group = new THREE.Group();
+
+      // Thin box (card)
+      const geo = new THREE.BoxGeometry(2.4, 1.4, 0.06, 32, 32, 2);
+      const mat = new THREE.MeshStandardMaterial({
+        color: 0x071425,
+        metalness: 0.1,
+        roughness: 0.25,
+        emissive: 0x001a25,
+        envMapIntensity: 0.6
+      });
+      const card = new THREE.Mesh(geo, mat);
+      card.position.set(0, 0, 0);
+      card.castShadow = true;
+      card.receiveShadow = true;
+      group.add(card);
+
+      // small foreground accent plane to simulate UI strip
+      const accentGeo = new THREE.PlaneGeometry(1.8, 0.32);
+      const accentMat = new THREE.MeshStandardMaterial({color:0x0f1724, metalness:0.2, roughness:0.2});
+      const accent = new THREE.Mesh(accentGeo, accentMat);
+      accent.position.set(0, -0.18, 0.035);
+      group.add(accent);
+
+      // tiny glowing orb accent
+      const orbGeo = new THREE.SphereGeometry(0.04, 16, 16);
+      const orbMat = new THREE.MeshBasicMaterial({color:0x06b6d4});
+      const orb = new THREE.Mesh(orbGeo, orbMat);
+      orb.position.set(0.9, 0.5, 0.05);
+      group.add(orb);
+
+      // particles (simple)
+      const particleGeo = new THREE.BufferGeometry();
+      const count = 40;
+      const positions = new Float32Array(count*3);
+      for(let i=0;i<count;i++){
+        positions[i*3+0] = (Math.random()-0.5)*6;
+        positions[i*3+1] = (Math.random()-0.5)*2.5;
+        positions[i*3+2] = (Math.random()-0.5)*3;
+      }
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      const particleMat = new THREE.PointsMaterial({size:0.02, color:0xffffff, opacity:0.06, transparent:true});
+      const points = new THREE.Points(particleGeo, particleMat);
+      scene.add(points);
+
+      scene.add(group);
+
+      // subtle floor reflection (fake)
+      const floor = new THREE.Mesh(
+        new THREE.PlaneGeometry(10, 10),
+        new THREE.MeshStandardMaterial({color:0x03060a, roughness:1, metalness:0})
+      );
+      floor.rotation.x = -Math.PI/2;
+      floor.position.y = -1.1;
+      scene.add(floor);
+
+      // Orbit controls
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enablePan = false;
+      controls.enableZoom = true;
+      controls.minDistance = 2.2;
+      controls.maxDistance = 8;
+      controls.target.set(0, 0, 0);
+      controls.update();
+
+      // Resize handling
+      function resize(){
+        const w = canvas.parentElement.clientWidth;
+        const h = canvas.parentElement.clientHeight;
+        if (canvas.width !== w * DPR || canvas.height !== h * DPR) {
+          renderer.setSize(w, h, false);
+          camera.aspect = w/h;
+          camera.updateProjectionMatrix();
+        }
+      }
+      window.addEventListener('resize', resize, {passive:true});
+
+      // Animation
+      let t = 0;
+      function animate(){
+        resize();
+        t += 0.01;
+        // floating motion
+        group.rotation.y = Math.sin(t*0.6) * 0.12;
+        group.rotation.x = Math.sin(t*0.3) * 0.04;
+        group.position.y = Math.sin(t*0.8) * 0.06;
+        // particle slow motion
+        points.rotation.y += 0.0005;
+        orb.position.x = 0.9 + Math.sin(t*1.2)*0.12;
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      // make card respond to project tiles hover (optional)
+      const projectEls = document.querySelectorAll('.project');
+      projectEls.forEach((el, idx) => {
+        el.addEventListener('mouseenter', ()=> {
+          // tilt + color accent
+          group.rotation.z = -0.06 - idx*0.01;
+          mat.color.setHex(0x072037);
+          orb.material.color.setHex(0xffb86b);
+        });
+        el.addEventListener('mouseleave', ()=> {
+          group.rotation.z = 0;
+          mat.color.setHex(0x071425);
+          orb.material.color.setHex(0x06b6d4);
+        });
+      });
+
+      // accessibility: keyboard focus effect for project tiles
+      projectEls.forEach((el) => {
+        el.addEventListener('focus', ()=> { group.scale.set(1.02,1.02,1.02); });
+        el.addEventListener('blur', ()=> { group.scale.set(1,1,1); });
+      });
+    }
+
+    // Contact form handling (no backend) — JS shows a friendly message and clears form
+    document.getElementById('contactForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const formMsg = document.getElementById('formMsg');
+      if(!name){ formMsg.textContent = 'Please enter your name.'; return; }
+      formMsg.style.color = '#8ee7d6';
+      formMsg.textContent = `Thanks ${name}! Your message is ready to be sent (demo).`;
+      this.reset();
+    });
+
+    // Resume button — placeholder: create a dummy PDF blob you can replace with real file
+    document.getElementById('resumeBtn').addEventListener('click', function(e){
+      // If you have an actual resume URL, set href attribute directly.
+      // For demo, we create a tiny text PDF-like blob and download it.
+      e.preventDefault();
+      const data = `S Nikesh\nProfessional Resume (demo)\nEmail: nikesh@example.com`;
+      const blob = new Blob([data], {type:'application/pdf'}); // demo — not real PDF
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'S_Nikesh_Resume.txt'; // demo filename
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
